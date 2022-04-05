@@ -12,7 +12,15 @@ export default {
   name: 'Index',
   setup () {
     onMounted(() => {
-      const Game = new game('playground', 100, 1000);
+      /**
+       * 
+       * @param {String} = 遊戲場的Element id 
+       * @param {Number} - 遊戲面積 (須為有正平方根的數 e.q. 9 16 25 36 ...)
+       * @param {Number} - 蛇的移動速度(e.q. 100 200 500 1000 ...)
+       * @param {String} - 蛇頭的顏色 (e.q. 'pink' 'black')
+       * @param {String} - 蛇身體的顏色 (e.q. 'pink' 'black')
+       */
+      const Game = new game('playground', 144, 500, 'orange', 'red');
       Game.init();
     });
     return {
@@ -24,8 +32,6 @@ export default {
 
 <style lang="scss">
   .content {
-    height: 500px;
-    width: 500px;
     display: flex;
     flex-wrap: wrap;
     .cell {
