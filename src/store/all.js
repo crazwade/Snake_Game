@@ -1,5 +1,10 @@
 let Direction;
-let GameStartable;
+let GameStatement;
+let isFoodExist= false;
+let FoodLocation;
+let GameOver = false;
+let BorderCollision = null;
+
 export class game {
   constructor(initPlayGround = target, initGameSize = size, initGameSpeed = speed, headColor, bodyColor) {
     this.Size = initGameSize;
@@ -10,6 +15,7 @@ export class game {
     this.headColor = headColor;
     this.bodyColor = bodyColor;
   }
+  // 初始化
   init() {
     console.log('-- Game Init --');
     const { Size, Target, Snake, moveCell, headColor, bodyColor } = this;
@@ -21,43 +27,57 @@ export class game {
       div.className = 'cell';
       playground.appendChild(div);
     };
-    Snake.push(128);
-    this.fillColor(128, headColor);
-    Snake.push(129);
-    this.fillColor(129, bodyColor);
-    Snake.push(130);
-    this.fillColor(130, bodyColor);
-    Snake.push(131);
-    this.fillColor(131, bodyColor);
+    Snake.push(3);
+    this.fillColor(3, headColor);
+    Snake.push(2);
+    this.fillColor(2, bodyColor);
+    Snake.push(1);
+    this.fillColor(1, bodyColor);
     this.moveListener();
-    GameStartable = false;
+    GameStatement = false;
   }
-
+  // 遊戲開始
+  gameStart() {
+    GameStatement = true;
+    this.gameActiveLoop();
+  }
+  // 主控制台
+  gameActiveLoop() {
+    const { Speed } = this;
+    if (GameStatement) {
+      setTimeout(() => {
+        this.move(Direction);
+        this.collision();
+        this.produceFood();
+        this.gameActiveLoop();
+      }, Speed);
+    }
+  }
+  // 移動上顏色
   fillColor(id, color) {
     document.getElementById(id).style.backgroundColor = color;
   }
-
+  // 移動去除顏色
   removeColor(id) {
     document.getElementById(id).style = '';
   }
-
+  // 移動
   async move(dir) {
     const { moveCell, Snake, headColor, bodyColor } = this;
-    console.log(`--方向改變-- 方向:${dir}`);
+    console.log(Snake);
+    console.log(`--行動方向-- 方向:${dir}`);
     let move;
     if (dir === 'up') {
       move = -moveCell;
     } else if (dir === 'down') {
-      move = +moveCell;
+      move = moveCell;
     } else if (dir === 'left') {
       move = -1;
     } else if (dir === 'right') {
       move = +1;
     }
-    const isCollision = await this.collision(move,Snake);
-    if(isCollision) {
+    if(!GameStatement) {
       console.log('game over');
-      GameStartable = false;
     } else {
       let tmp;
       Snake.forEach((item, index) => {
@@ -76,41 +96,96 @@ export class game {
       });
     }
   }
-
+  // 監聽事件 上下左右
+  // 進入遊戲後直到上下左右被點擊後 遊戲開始
   moveListener() {
     window.addEventListener('keydown',((e) => {
-      if(e.code === 'ArrowUp') {
-        if(Direction !== 'down') Direction = 'up';
-        if(!GameStartable) this.gameStart();
-      } else if (e.code === 'ArrowDown') {
-        if(Direction !== 'up') Direction = 'down';
-        if(!GameStartable) this.gameStart();
-      } else if (e.code === 'ArrowLeft') {
-        if(Direction !== 'right') Direction = 'left';
-        if(!GameStartable) this.gameStart();
-      } else if (e.code === 'ArrowRight') {
-        if(Direction !== 'left') Direction = 'right';
-        if(!GameStartable) this.gameStart();
+      if(!GameOver) {
+        if(e.code === 'ArrowUp') {
+          if(Direction !== 'down') Direction = 'up';
+          if(!GameStatement) this.gameStart();
+        } else if (e.code === 'ArrowDown') {
+          if(Direction !== 'up') Direction = 'down';
+          if(!GameStatement) this.gameStart();
+        } else if (e.code === 'ArrowLeft') {
+          if(Direction !== 'right') Direction = 'left';
+          if(!GameStatement) this.gameStart();
+        } else if (e.code === 'ArrowRight') {
+          if(Direction !== 'left') Direction = 'right';
+          if(!GameStatement) this.gameStart();
+        }
       }
     }), false);
   }
-
-  gameStart() {
-    GameStartable = true;
-    this.gameActive();
-  }
-
-  gameActive() {
-    const { Speed } = this;
-    if (GameStartable) {
-      this.move(Direction);
-      setTimeout(() => {
-        this.gameActive();
-      }, Speed);
+  // 食物產生
+  produceFood() {
+    const { Snake, Speed } = this;
+    if(!isFoodExist & Math.floor(Math.random() * 10) < (Speed/100)*2) { 
+      const getFoodLocation = Math.floor(Math.random() * 100);
+      if(!Snake.includes(getFoodLocation)){
+        document.getElementById(getFoodLocation).style.backgroundColor = '#FF5809';
+        FoodLocation = getFoodLocation;
+        isFoodExist = true;
+        console.log('---Food Born---');
+      }
     }
   }
-
-  async collision() {
-    return false;
+  // 碰撞事件(3)
+  collision() {
+    const { Snake, Speed, moveCell } = this;
+    // 檢查吃到食物
+    if(isFoodExist) {
+      if(Snake[0] === FoodLocation) {
+        setTimeout(() => {
+          isFoodExist = false;
+          Snake.push(Snake[Snake.length-1]);
+        }, Speed)
+      }
+    }
+    // 碰到身體
+    const snakeBody = [...Snake];
+    snakeBody.shift();
+    if(snakeBody.includes(Snake[0])) {
+      console.log('撞到身體了');
+      GameStatement = false;
+      GameOver = true;
+      document.getElementById('gameover_body').style.display = 'block';
+    }
+    // 碰到牆壁
+    if(Snake[1]%moveCell === 0 && Snake[0]%moveCell === 1) {
+      console.log('撞牆');
+      GameStatement = false;
+      GameOver = true;
+      document.getElementById('gameover_border').style.display = 'block';
+    } else if (Snake[0]%moveCell === 0 && Snake[1]%moveCell === 1) {
+      console.log('撞牆');
+      GameStatement = false;
+      GameOver = true;
+      document.getElementById('gameover_border').style.display = 'block';
+    } else if (Snake[0] <= moveCell) {
+      if(BorderCollision === null) {
+        BorderCollision = Snake[0];
+      }else if(BorderCollision != Snake[0]) {
+        BorderCollision = Snake[0];
+      }else if(BorderCollision === Snake[0]) {
+        console.log('撞牆');
+        GameStatement = false;
+        GameOver = true;
+        document.getElementById('gameover_border').style.display = 'block';
+      }
+    } else if (Snake[0] > (moveCell * moveCell - moveCell)) {
+      if(BorderCollision === null) {
+        BorderCollision = Snake[0];
+      }else if(BorderCollision != Snake[0]) {
+        BorderCollision = Snake[0];
+      }else if(BorderCollision === Snake[0]) {
+        console.log('撞牆');
+        GameStatement = false;
+        GameOver = true;
+        document.getElementById('gameover_border').style.display = 'block';
+      }
+    } else {
+      BorderCollision = null;
+    }
   }
 }

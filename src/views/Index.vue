@@ -1,43 +1,60 @@
 <template>
-  <div class="content" id="playground">
-    
+  <div class="content">
+    <div class="snake_img" />
+    <div @click="start()" class="play_btn" />
   </div>
 </template>
 
 <script>
-import { onMounted } from 'vue'
-import { game } from '../store/all';
+import { useRouter } from 'vue-router';
 
 export default {
   name: 'Index',
   setup () {
-    onMounted(() => {
-      /**
-       * 
-       * @param {String} = 遊戲場的Element id 
-       * @param {Number} - 遊戲面積 (須為有正平方根的數 e.q. 9 16 25 36 ...)
-       * @param {Number} - 蛇的移動速度(e.q. 100 200 500 1000 ...)
-       * @param {String} - 蛇頭的顏色 (e.q. 'pink' 'black')
-       * @param {String} - 蛇身體的顏色 (e.q. 'pink' 'black')
-       */
-      const Game = new game('playground', 144, 500, 'orange', 'red');
-      Game.init();
-    });
+    const router = useRouter();
+    const start = () => {
+      router.push({path: '/Snake'});
+    }
     return {
-
+      start,
     }
   }
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
   .content {
-    display: flex;
-    flex-wrap: wrap;
-    .cell {
-      height: 48px;
-      width: 48px;
-      border: 1px black solid;
+    .snake_img {
+      width: 600px;
+      height: 500px;
+      background: url('../assets/snake.png');
+      background-position: center;
+      background-size: cover;
+      background-repeat: no-repeat;
+      margin-bottom: 50px;
     }
+    .play_btn {
+      animation: crescendo 1.5s alternate infinite ease-in;
+      width: 300px;
+      height: 200px;
+      background: url('../assets/play.png');
+      background-position: center;
+      background-size: cover;
+      background-repeat: no-repeat;
+    }
+    .play_btn:hover {
+      background: url('../assets/play_hover.png');
+      background-position: center;
+      background-size: cover;
+      background-repeat: no-repeat;
+    }
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  @keyframes crescendo {
+    0%   {transform: scale(1);}
+    100% {transform: scale(1.2);}
   }
 </style>

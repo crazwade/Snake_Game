@@ -1,23 +1,23 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
 import Index from '../views/Index.vue';
 import GameUI from '../views/GameUI.vue';
-import Nofound from '../views/NoFound.vue';
+import NoFound from '../views/NoFound.vue';
 
 const routes = [
   {
-    path: '/Snake',
+    path: '/',
     name: 'Index',
     component: Index
   },
   {
-    path: '/',
+    path: '/Snake',
     name: 'GameUI',
     component: GameUI
   },
   {
     path: '/:pathMatch(.*)*',
-    name: 'Nofound',
-    component: Nofound,
+    name: 'NoFound',
+    component: NoFound,
   },
 ]
 
