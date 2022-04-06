@@ -22,14 +22,18 @@
         <option value="red" style="background-color: red;"></option>
         <option value="#AE57A4" style="background-color: #AE57A4;"></option>
         <option value="pink" style="background-color: pink;"></option>
+        <option value="#930000" style="background-color: #930000;"></option>
+        <option value="	#FF5151" style="background-color: #FF5151;"></option>
       </select>
     </div>
     <div class="selectArea">
       <label >請選擇身體的顏色</label>
       <select name="body" id="body" @change="SelectColor('body')" style="background-color:#66B3FF;">
-        <option value="#66B3FF" style="background-color: 	#66B3FF;"></option>
+        <option value="#FF8000" style="background-color: #FF8000;"></option>
+        <option value="#66B3FF" style="background-color: #66B3FF;"></option>
         <option value="#02F78E" style="background-color: #02F78E;"></option>
         <option value="#FFD306" style="background-color: #FFD306;"></option>
+        <option value="#949449" style="background-color: #949449;"></option>
       </select>
     </div>
     <div @click="GameStart()" class="gameStart" />
