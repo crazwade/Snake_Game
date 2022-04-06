@@ -4,6 +4,8 @@ let isFoodExist= false;
 let FoodLocation;
 let GameOver = false;
 let BorderCollision = null;
+let Score = 0;
+let GameTime = 0;
 
 export class game {
   constructor(initPlayGround = target, initGameSize = size, initGameSpeed = speed, headColor, bodyColor) {
@@ -17,6 +19,7 @@ export class game {
   }
   // 初始化
   init() {
+    this.gameInfo();
     console.log('-- Game Init --');
     const { Size, Target, Snake, moveCell, headColor, bodyColor } = this;
     const playground = document.getElementById(Target);
@@ -40,6 +43,7 @@ export class game {
   gameStart() {
     GameStatement = true;
     this.gameActiveLoop();
+    this.goTime();
   }
   // 主控制台
   gameActiveLoop() {
@@ -51,6 +55,15 @@ export class game {
         this.produceFood();
         this.gameActiveLoop();
       }, Speed);
+    }
+  }
+  goTime() {
+    if (GameStatement) {
+      setTimeout(() => {
+        GameTime += 1;
+        this.gameInfo();
+        this.goTime();
+      }, 1000);
     }
   }
   // 移動上顏色
@@ -123,7 +136,8 @@ export class game {
     if(!isFoodExist & Math.floor(Math.random() * 10) < (Speed/100)*2) { 
       const getFoodLocation = Math.floor(Math.random() * 100);
       if(!Snake.includes(getFoodLocation)){
-        document.getElementById(getFoodLocation).style.backgroundColor = '#FF5809';
+        console.log(getFoodLocation);
+        document.getElementById(getFoodLocation).classList.add('apple');
         FoodLocation = getFoodLocation;
         isFoodExist = true;
         console.log('---Food Born---');
@@ -136,6 +150,9 @@ export class game {
     // 檢查吃到食物
     if(isFoodExist) {
       if(Snake[0] === FoodLocation) {
+        document.getElementById(FoodLocation).classList.remove('apple');
+        Score += 1;
+        this.gameInfo();
         setTimeout(() => {
           isFoodExist = false;
           Snake.push(Snake[Snake.length-1]);
@@ -186,6 +203,17 @@ export class game {
       }
     } else {
       BorderCollision = null;
+    }
+  }
+  // 得分&經過時間
+  gameInfo() {
+    document.getElementById('score').innerHTML = Score;
+    if(GameTime< 61){
+      document.getElementById('passtime').innerHTML = `${GameTime} 秒`;
+    } else {
+      const min = Math.floor(GameTime/60);
+      const sec = GameTime%60;
+      document.getElementById('passtime').innerHTML = `${min} 分 ${sec} 秒`;
     }
   }
 }

@@ -11,9 +11,9 @@
     <div class="selectArea">
       <label for="">請選擇難度</label>
       <select name="speed" id="speed">
-        <option value="300">簡單</option>
-        <option value="200">中等</option>
-        <option value="100">困難</option>
+        <option value="150">簡單</option>
+        <option value="100">中等</option>
+        <option value="50">困難</option>
       </select>
     </div>
     <div class="selectArea">
@@ -38,6 +38,17 @@
     <div class="gameover" id="gameover_body" />
     <div class="gameover" id="gameover_border" />
   </div>
+  <div class="gameBoard" id="gameBoard">
+    <div class="area">
+      <div class="title">得分</div>
+      <div id="score">10</div>
+      <div class="unit">分</div>
+    </div>
+    <div class="area">
+      <div class="title">遊戲時間  </div>
+      <div id="passtime">10</div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -54,6 +65,7 @@ export default {
     };
     onMounted(() => {
       document.getElementById('playground').style.display = 'none';
+      document.getElementById('gameBoard').style.display = 'none';
       document.getElementById('gameControl').style.display = 'block';
     });
     const GameStart = () => {
@@ -73,6 +85,7 @@ export default {
       Game.init();
       document.getElementById('playground').style.display = 'flex';
       document.getElementById('gameControl').style.display = 'none';
+      document.getElementById('gameBoard').style.display = 'flex';
     }
     return {
       SelectColor,
@@ -83,6 +96,27 @@ export default {
 </script>
 
 <style lang="scss">
+  #gameBoard {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    .area {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      margin: 10px 20px;
+      font-size: 24px;
+      font-weight: 700;
+      #score {
+        color: red;
+      }
+      #passtime {
+        color: blue;
+      }
+    }
+  }
   .gameControl {
     .selectArea {
       font-size: 24px;
@@ -121,13 +155,22 @@ export default {
     }
   }
   #playground {
+    background: url('../assets/grass.png');
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
     display: flex;
     flex-wrap: wrap;
     position: relative;
     .cell {
-      height: 48px;
-      width: 48px;
-      border: 1px black solid;
+      height: 50px;
+      width: 50px;
+      &.apple {
+        background: url('../assets/apple.png');
+        background-position: center;
+        background-size: contain;
+        background-repeat: no-repeat;
+      }
     }
     .gameover {
       display: none;
