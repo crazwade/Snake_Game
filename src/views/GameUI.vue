@@ -1,5 +1,6 @@
 <template>
   <div class="gameControl" id="gameControl">
+    <div class="game_title">遊戲設定</div>
     <div class="selectArea">
       <label for="">請選擇地圖大小</label>
       <select name="size" id="size">
@@ -122,6 +123,13 @@ export default {
     }
   }
   .gameControl {
+    .game_title {
+      font-size: 48px;
+      font-weight: 700;
+      text-align: center;
+      color: brown;
+      margin-bottom: 20px;
+    }
     .selectArea {
       font-size: 24px;
       font-weight: 700;

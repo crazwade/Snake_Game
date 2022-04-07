@@ -77,7 +77,6 @@ export class game {
   // 移動
   async move(dir) {
     const { moveCell, Snake, headColor, bodyColor } = this;
-    console.log(Snake);
     console.log(`--行動方向-- 方向:${dir}`);
     let move;
     if (dir === 'up') {
@@ -134,13 +133,13 @@ export class game {
   produceFood() {
     const { Snake, Speed } = this;
     if(!isFoodExist & Math.floor(Math.random() * 10) < (Speed/100)*2) { 
-      const getFoodLocation = Math.floor(Math.random() * 100);
+      const getFoodLocation = Math.floor(Math.random() * 100 + 1);
       if(!Snake.includes(getFoodLocation)){
         console.log(getFoodLocation);
         document.getElementById(getFoodLocation).classList.add('apple');
         FoodLocation = getFoodLocation;
         isFoodExist = true;
-        console.log('---Food Born---');
+        console.log('---食物生成---');
       }
     }
   }
@@ -163,7 +162,7 @@ export class game {
     const snakeBody = [...Snake];
     snakeBody.shift();
     if(snakeBody.includes(Snake[0])) {
-      console.log('撞到身體了');
+      console.log('撞到身體');
       GameStatement = false;
       GameOver = true;
       document.getElementById('gameover_body').style.display = 'block';
